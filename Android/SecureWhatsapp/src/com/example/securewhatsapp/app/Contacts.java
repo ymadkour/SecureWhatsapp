@@ -45,6 +45,8 @@ public class Contacts extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        Contacts.sContacts.clear();
+        Contacts.alContacts.clear();
 	//	setContentView(R.layout.contact);
 		ContentResolver contResv = getContentResolver();
 		Cursor cursor = contResv.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);

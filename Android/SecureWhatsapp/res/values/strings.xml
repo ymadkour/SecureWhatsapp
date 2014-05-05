@@ -7,5 +7,8 @@
     <string name="title_activity_contacts">Contacts</string>
     <string name="title_activity_fragment">fragment</string>
     <string name="title_activity_s_whatsapp_friends">sWhatsappFriends</string>
+    <string name="title_activity_server_side">ServerSide</string>
+    <string name="title_activity_simple_client">SimpleClientActivity</string>
+    <string name="title_activity_chat">Chat</string>
 
 </resources>

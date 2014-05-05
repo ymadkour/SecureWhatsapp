@@ -126,8 +126,7 @@ public class ContactListActivity extends Activity implements
 		} else {
 			showToast("You are foreveralone!!!");
 		}
-        Contacts.sContacts.clear();
-        Contacts.alContacts.clear();
+
 	}
 
 	private void showToast(String msg) {

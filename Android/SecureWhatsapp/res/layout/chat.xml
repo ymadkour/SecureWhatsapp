@@ -23,12 +23,11 @@
         android:background="@drawable/abc_ab_share_pack_holo_light" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="85dp"
-        android:layout_height="64dp"
-        android:id="@+id/chatSentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatButton"
         android:layout_gravity="right"
-        android:background="@drawable/abc_ic_go"
-        android:enabled="false"
-        android:clickable="false" />
+        android:layout_weight="0.30"
+        android:background="@drawable/abc_ic_go_search_api_holo_light" />
+
 </LinearLayout>

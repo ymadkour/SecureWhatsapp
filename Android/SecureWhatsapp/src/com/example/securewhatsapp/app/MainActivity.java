@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -18,10 +21,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,18 +40,42 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 	public static HttpClient httpClient ;
 	public static SecureWhatsappDatabaseHelper datasource;
-	
+    public static int currentInt;
+   // private RefreshHandler mRedrawHandler = new RefreshHandler();
+
+/*    class RefreshHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity.this.updateUI();
+        }
+
+        public void sleep(long delayMillis) {
+            this.removeMessages(0);
+            sendMessageDelayed(obtainMessage(0), delayMillis);
+        }
+    };
+
+    private void updateUI(){
+         currentInt = currentInt + 10;
+
+            mRedrawHandler.sleep(1000);
+            System.out.println("test cron job: "+currentInt);
+
+    }*/
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         datasource = new SecureWhatsappDatabaseHelper(this);
         datasource.open();
-
+      //  updateUI();
         if(!datasource.isDBEmpty()){
           // datasource.deleteDB();
          //   setContentView(R.layout.chat);
-            setContentView(R.layout.registration_page);
-            sendMessage();
+            Intent nextScreen = new Intent(getApplicationContext(), Chat.class);
+            //Sending data to another Activity
+            startActivity(nextScreen);
+
+           // sendMessage();
 
         }
         else{
@@ -59,7 +89,27 @@ public class MainActivity extends ActionBarActivity {
 
 	
 	}
-	
+
+    public String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String ip = Formatter.formatIpAddress(inetAddress.hashCode());
+                        System.out.println("***** IP=" + ip);
+                        return ip;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+           // Log.e(TAG, ex.toString());
+        }
+        return null;
+    }
+
+
 	public void sendMessage(){
 		
 		final EditText userName   = (EditText)findViewById(R.id.userName);
@@ -79,6 +129,7 @@ public class MainActivity extends ActionBarActivity {
 				                System.out.println("ahu ya karim,, khuuuuuuud!!!!");
 				                int  s =1 ;
 				               datasource.createSecureWhatsappUser(number.getText().toString());
+                            //TODO: hashing password before sending it to the server.
 			            	postData(userName.getText().toString(),password.getText().toString(),country.getText().toString(),number.getText().toString() );
 			             //   Log.d("EditText value=",edit_text.getText().toString() );
                             System.out.println("Send post to the server");
@@ -98,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
 	        	String country = params[2];
 	        	String number = params[3];
 	        	
-	        	System.out.println("*****userName*******"+ userName+"*****Country*******"+ country+"*****Password*******"+ password+"*****Number*******"+ number);
+	        	System.out.println("*****userName*******"+ userName+"*****Country*******"+ country+"*****Password*******"+ password+"*****Number*******"+ number+"*******IP*****"+getLocalIpAddress());
 	           
 
 	             httpClient = new DefaultHttpClient();
@@ -115,6 +166,7 @@ public class MainActivity extends ActionBarActivity {
 	            BasicNameValuePair passwordBasicNameValuePAir = new BasicNameValuePair("password", password);
 	            BasicNameValuePair countryBasicNameValuePAir = new BasicNameValuePair("country", country);
 	            BasicNameValuePair numberBasicNameValuePAir = new BasicNameValuePair("number", number);
+                BasicNameValuePair ipBasicNameValuePair = new BasicNameValuePair("ip",getLocalIpAddress());
 
 	            // We add the content that we want to pass with the POST request to as name-value pairs
 	            //Now we put those sending details to an ArrayList with type safe of NameValuePair
@@ -123,6 +175,7 @@ public class MainActivity extends ActionBarActivity {
 	            nameValuePairList.add(passwordBasicNameValuePAir);
 	            nameValuePairList.add(countryBasicNameValuePAir);
 	            nameValuePairList.add(numberBasicNameValuePAir);
+                nameValuePairList.add(ipBasicNameValuePair);
 
 	            try {
 	                // UrlEncodedFormEntity is an entity composed of a list of url-encoded pairs. 

@@ -55,5 +55,23 @@ public class CustomJsonReader {
         return object;
     }
 
+    public JSONObject writeJSONMessage( ArrayList<String> numbersRequests, String number,String content) {
+        JSONObject object = new JSONObject();
+        try {
+
+
+            JSONArray requests = new JSONArray();
+            for(int i = 0 ; i< numbersRequests.size() ; i++){
+                requests.put(numbersRequests.get(i));
+            }
+            object.put("destinations",requests);
+            object.put("userNumber", number);
+            object.put("content",content);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(object);
+        return object;
+    }
 
 }
