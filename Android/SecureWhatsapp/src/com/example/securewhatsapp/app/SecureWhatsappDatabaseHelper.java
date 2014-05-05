@@ -74,9 +74,25 @@ public class SecureWhatsappDatabaseHelper {
             System.out.println(" "+id+" "+number+" "+count );
             rowExists = false;
         }
+        mCursor.close();
         return rowExists;
     }
+    public void deleteDB(){
 
+        database.delete(SecureWhatsappDatabase.TABLE_USERS, null, null);
+    }
+        public String getUserDB(){
+            Cursor mCursor = database.rawQuery("SELECT * FROM " +SecureWhatsappDatabase.TABLE_USERS+" LIMIT 1",null);
+            String userNumber = "";
+
+            if (mCursor.moveToFirst()) {
+
+                userNumber = mCursor.getString(1);
+
+            }
+            mCursor.close();
+            return userNumber;
+        }
 
 	  private SecureWhatsappUser cursorToUser(Cursor cursor) {
 		  SecureWhatsappUser user = new SecureWhatsappUser();

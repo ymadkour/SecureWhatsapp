@@ -1,7 +1,9 @@
 package com.example.securewhatsapp.app;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +18,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -29,6 +32,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ContactListActivity extends Activity implements
 		OnItemClickListener {
@@ -71,8 +84,8 @@ public class ContactListActivity extends Activity implements
 
 			}
 
-			for (int i = 0; i < Contacts.alContacts.size(); i++) {
-				if (Contacts.alContacts.get(i).equals(phoneNumber)) {
+			for (int i = 0; i < Contacts.sContacts.size(); i++) {
+				if (Contacts.sContacts.get(i).equals(phoneNumber.replaceAll("\\s+",""))) {
 					ContactBean objContact = new ContactBean();
 					objContact.setName(name);
 					objContact.setphotoURL(photo);
@@ -113,6 +126,8 @@ public class ContactListActivity extends Activity implements
 		} else {
 			showToast("You are foreveralone!!!");
 		}
+        Contacts.sContacts.clear();
+        Contacts.alContacts.clear();
 	}
 
 	private void showToast(String msg) {
@@ -121,7 +136,7 @@ public class ContactListActivity extends Activity implements
 	
 	public void onClick(View v) {
         
-       // items[position].setSelected(cBox.isChecked());              
+       // items[position].setSelected(cBox.isChecked());
     } 
 
 	@Override
@@ -134,24 +149,108 @@ public class ContactListActivity extends Activity implements
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+        ArrayList<String> checkedNumbers = new ArrayList<String>();
 		 CheckBox cbx = (CheckBox)listView.findViewById(R.id.checkBox1);
 		 int checkedItemPosition;
          int firstPosition = listView.getFirstVisiblePosition();
          for(int i=firstPosition;i<listView.getCount();i++){
-         View v1=listView.getChildAt(i);
-         cbx = (CheckBox)v1.findViewById(R.id.checkBox1);
-         if(cbx.isChecked()){
+             View v1=listView.getChildAt(i);
+             cbx = (CheckBox)v1.findViewById(R.id.checkBox1);
+             if(cbx.isChecked()){
 
-             // Toast.makeText(getApplicationContext(), 
-                    //          "Checked position " + goods.get(i), 
-                     //          Toast.LENGTH_SHORT).show();
-              checkedItemPosition=i;
-
-	       System.out.println( "CLicked ..."+checkedItemPosition);}
+                 // Toast.makeText(getApplicationContext(),
+                        //          "Checked position " + goods.get(i),
+                         //          Toast.LENGTH_SHORT).show();
+               checkedItemPosition=i;
+               checkedNumbers.add(Contacts.sContacts.get(i));
+               System.out.println( "CLicked ..."+checkedItemPosition);
+             }
          }
 
-	      return false;
+            CustomJsonReader cJR = new CustomJsonReader();
+            String userNumber = MainActivity.datasource.getUserDB();
+            JSONObject object = cJR.writeJSON(checkedNumbers,userNumber);
+            SendRequest(object);
+
+        return false;
 	}
+
+
+    public void SendRequest( final JSONObject object){
+        class SendPostReqAsyncTask extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected String doInBackground(String... params) {
+
+
+                HttpPost httpPost = new HttpPost("http://192.168.1.6/whatsapp/index.php?r=user/addfriends");
+
+                ArrayList <BasicNameValuePair> basicValuePair;
+
+                List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
+
+
+                    nameValuePairList.add(new BasicNameValuePair("1", object.toString()));
+
+
+
+                try {
+
+                    UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(nameValuePairList);
+
+
+                    httpPost.setEntity(urlEncodedFormEntity);
+
+                    HttpResponse httpResponse = MainActivity.httpClient.execute(httpPost);
+                    HttpEntity entity = httpResponse.getEntity();
+
+                    InputStream inputStream = httpResponse.getEntity().getContent();
+
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                    String stringBuilder = "";
+
+                    String bufferedStrChunk = null;
+
+                    while((bufferedStrChunk = bufferedReader.readLine()) != null){
+                        stringBuilder += bufferedStrChunk;
+                    }
+
+                    System.out.println("Server message request "+ stringBuilder);
+                    return stringBuilder.toString();
+
+                } catch (ClientProtocolException cpe) {
+                    System.out.println("First Exception caz of HttpResponese :" + cpe);
+                    cpe.printStackTrace();
+                } catch (IOException ioe) {
+                    System.out.println("Second Exception caz of HttpResponse :" + ioe);
+                    ioe.printStackTrace();
+                }
+
+
+                return null;
+            }
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                // Toast.makeText(getApplicationContext(), "User created Successfully ", Toast.LENGTH_LONG).show();
+               // Intent nextScreen = new Intent(getApplicationContext(), ContactListActivity.class);
+                //Sending data to another Activity
+              //  startActivity(nextScreen);
+                System.out.println("Server request done ");
+                Intent nextScreen = new Intent(getApplicationContext(), sWhatsappFriends.class);
+                //Sending data to another Activity
+                startActivity(nextScreen);
+
+            }
+        }
+
+        SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
+        sendPostReqAsyncTask.execute("");
+    }
 
 	@Override
 	public void onItemClick(AdapterView<?> listview, View v, int position,
@@ -159,5 +258,7 @@ public class ContactListActivity extends Activity implements
 		
 		
 	}
+
+
 
 }

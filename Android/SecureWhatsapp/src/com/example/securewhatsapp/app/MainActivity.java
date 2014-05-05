@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 	public static HttpClient httpClient ;
-	private SecureWhatsappDatabaseHelper datasource;
+	public static SecureWhatsappDatabaseHelper datasource;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,8 @@ public class MainActivity extends ActionBarActivity {
         datasource.open();
 
         if(!datasource.isDBEmpty()){
+          // datasource.deleteDB();
+         //   setContentView(R.layout.chat);
             setContentView(R.layout.registration_page);
             sendMessage();
 
@@ -77,8 +79,9 @@ public class MainActivity extends ActionBarActivity {
 				                System.out.println("ahu ya karim,, khuuuuuuud!!!!");
 				                int  s =1 ;
 				               datasource.createSecureWhatsappUser(number.getText().toString());
-			            //	postData(userName.getText().toString(),password.getText().toString(),country.getText().toString(),number.getText().toString() );
-			              //  Log.d("EditText value=",edit_text.getText().toString() );
+			            	postData(userName.getText().toString(),password.getText().toString(),country.getText().toString(),number.getText().toString() );
+			             //   Log.d("EditText value=",edit_text.getText().toString() );
+                            System.out.println("Send post to the server");
 			            }
 			        });
 		
@@ -151,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
 	                    while((bufferedStrChunk = bufferedReader.readLine()) != null){
 	                        stringBuilder.append(bufferedStrChunk);
 	                    }
-	                    System.out.println("Server Message :" + stringBuilder);
+	                    //System.out.println("Server Message :" + stringBuilder);
 	                    return stringBuilder.toString();
 
 	                } catch (ClientProtocolException cpe) {

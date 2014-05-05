@@ -17,6 +17,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -37,6 +40,7 @@ import android.provider.ContactsContract;
 
 public class Contacts extends ActionBarActivity {
 	public static ArrayList<String> alContacts = new ArrayList<String>();
+    public static ArrayList<String> sContacts = new ArrayList<String>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +68,11 @@ public class Contacts extends ActionBarActivity {
 		        }
 
 		    } while (cursor.moveToNext()) ;
-		    Intent nextScreen = new Intent(getApplicationContext(), ContactListActivity.class);
+
             //Sending data to another Activity
-            startActivity(nextScreen);
-		    // checkUsers(alContacts);
+
+		     checkUsers(alContacts);
+
 		}
 		
 	}
@@ -87,7 +92,7 @@ public class Contacts extends ActionBarActivity {
 	            List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
 	            
 	            for (int i =0 ; i < alContacts.size() ; i++){
-	            	nameValuePairList.add(new BasicNameValuePair("" +(i+1), alContacts.get(i)));
+	            	nameValuePairList.add(new BasicNameValuePair("" +(i+1), alContacts.get(i).replaceAll("\\s+","")));
 	            }
 	            
 
@@ -107,14 +112,29 @@ public class Contacts extends ActionBarActivity {
 
 	                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-	                    StringBuilder stringBuilder = new StringBuilder();
+	                    String stringBuilder = "";
 
 	                    String bufferedStrChunk = null;
 
 	                    while((bufferedStrChunk = bufferedReader.readLine()) != null){
-	                        stringBuilder.append(bufferedStrChunk);
+                            stringBuilder += bufferedStrChunk;
 	                    }
-	                    System.out.println("Server Message :" + stringBuilder);
+
+                      //  JSONArray jsonObj = new JSONArray(stringBuilder);
+                      //  System.out.println("Server Message1 :" + jsonObj.toString());
+                         CustomJsonReader cJR= new CustomJsonReader();
+                         sContacts =  cJR.reader(stringBuilder);
+
+
+
+	                   // System.out.println("Server Message :" + stringBuilder);
+                        /*stringBuilder = stringBuilder.replaceAll("\"","").replaceAll("\\[","").replaceAll("\\]","");
+                        String[] serverMessage = stringBuilder.split(",");
+                        for(int i =0 ; serverMessage.length>i ; i++){
+                                sContacts.add(serverMessage[i]);
+                        }*/
+
+
 	                    return stringBuilder.toString();
 
 	                } catch (ClientProtocolException cpe) {
