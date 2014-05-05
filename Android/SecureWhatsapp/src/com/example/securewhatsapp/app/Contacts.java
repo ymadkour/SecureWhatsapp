@@ -1,4 +1,4 @@
-package com.example.securewhatsapp;
+package com.example.securewhatsapp.app;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,16 +36,17 @@ import android.os.Build;
 import android.provider.ContactsContract;
 
 public class Contacts extends ActionBarActivity {
+	public static ArrayList<String> alContacts = new ArrayList<String>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.contacts);
+	//	setContentView(R.layout.contact);
 		ContentResolver contResv = getContentResolver();
 		Cursor cursor = contResv.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 		if(cursor.moveToFirst())
 		{
-		    ArrayList<String> alContacts = new ArrayList<String>();
+		    
 		    do
 		    {
 		        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
@@ -63,63 +64,43 @@ public class Contacts extends ActionBarActivity {
 		        }
 
 		    } while (cursor.moveToNext()) ;
-		    checkUsers(alContacts);
+		    Intent nextScreen = new Intent(getApplicationContext(), ContactListActivity.class);
+            //Sending data to another Activity
+            startActivity(nextScreen);
+		    // checkUsers(alContacts);
 		}
 		
 	}
 
 	
-	public void checkUsers( ArrayList<String> alContacts){
+	public void checkUsers( final ArrayList<String> alContacts){
 		class SendPostReqAsyncTask extends AsyncTask<String, Void, String>{
 
 	        @Override
 	        protected String doInBackground(String... params) {
 
-	        	 System.out.println(params[0]);
-	        	
-
-	           HttpClient httpClient = new DefaultHttpClient();
-
-	            // In a POST request, we don't pass the values in the URL.
-	            //Therefore we use only the web page URL as the parameter of the HttpPost argument
+	        
 	            HttpPost httpPost = new HttpPost("http://192.168.1.6/whatsapp/index.php?r=user/findusers");
 
-	            // Because we are not passing values over the URL, we should have a mechanism to pass the values that can be
-	            //uniquely separate by the other end.
-	            //To achieve that we use BasicNameValuePair             
-	            //Things we need to pass with the POST request
 	            ArrayList <BasicNameValuePair> basicValuePair;
-	           // for(int i =0 ; i<alContact)
-	            BasicNameValuePair usernameBasicNameValuePair = new BasicNameValuePair("1", params[0]);
-	            BasicNameValuePair passwordBasicNameValuePAir = new BasicNameValuePair("2", params[1]);
-	            //BasicNameValuePair countryBasicNameValuePAir = new BasicNameValuePair("country", country);
-	            ///BasicNameValuePair numberBasicNameValuePAir = new BasicNameValuePair("number", number);
-
-	            // We add the content that we want to pass with the POST request to as name-value pairs
-	            //Now we put those sending details to an ArrayList with type safe of NameValuePair
+	           
 	            List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
-	            nameValuePairList.add(usernameBasicNameValuePair);
-	            nameValuePairList.add(passwordBasicNameValuePAir);
-	            //nameValuePairList.add(countryBasicNameValuePAir);
-	            //nameValuePairList.add(numberBasicNameValuePAir);
+	            
+	            for (int i =0 ; i < alContacts.size() ; i++){
+	            	nameValuePairList.add(new BasicNameValuePair("" +(i+1), alContacts.get(i)));
+	            }
+	            
 
 	            try {
-	                // UrlEncodedFormEntity is an entity composed of a list of url-encoded pairs. 
-	                //This is typically useful while sending an HTTP POST request. 
+	                
 	                UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(nameValuePairList);
 
-	                // setEntity() hands the entity (here it is urlEncodedFormEntity) to the request.
+	               
 	                   httpPost.setEntity(urlEncodedFormEntity);
 
-	            
-	                    // HttpResponse is an interface just like HttpPost.
-	                    //Therefore we can't initialize them
-	                    HttpResponse httpResponse = httpClient.execute(httpPost);
+	                    HttpResponse httpResponse = MainActivity.httpClient.execute(httpPost);
 	                    HttpEntity entity = httpResponse.getEntity();
 	                   
-
-	                    // According to the JAVA API, InputStream constructor do nothing. 
-	                    //So we can't initialize InputStream although it is not an interface
 	                    InputStream inputStream = httpResponse.getEntity().getContent();
 
 	                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -152,15 +133,13 @@ public class Contacts extends ActionBarActivity {
 	        protected void onPostExecute(String result) {
 	            super.onPostExecute(result);
 	            
-	            if(result.equals("success")){
-	                Toast.makeText(getApplicationContext(), "User created Successfully ", Toast.LENGTH_LONG).show();
-	                Intent nextScreen = new Intent(getApplicationContext(), Contacts.class);
+	            
+	               // Toast.makeText(getApplicationContext(), "User created Successfully ", Toast.LENGTH_LONG).show();
+	                Intent nextScreen = new Intent(getApplicationContext(), ContactListActivity.class);
 	                //Sending data to another Activity
 	                startActivity(nextScreen);
 	                
-	            }else{
-	                Toast.makeText(getApplicationContext(), "Please Try again", Toast.LENGTH_LONG).show();
-	            }
+	           
 	            
 	           
 	            
@@ -168,7 +147,7 @@ public class Contacts extends ActionBarActivity {
 	    }
 
 	    SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
-	    sendPostReqAsyncTask.execute("2314","123131");     
+	    sendPostReqAsyncTask.execute("");     
 	}
 	
 	

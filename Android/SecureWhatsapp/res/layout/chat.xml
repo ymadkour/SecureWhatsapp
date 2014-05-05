@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="204dp"
+        android:layout_weight="0.30"
+        android:background="#fffaf0"
+        android:focusable="false"></GridLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatText"
+        android:layout_weight="0.45"
+        android:minLines="6"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:background="@drawable/abc_ab_share_pack_holo_light" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="85dp"
+        android:layout_height="64dp"
+        android:id="@+id/chatSentButton"
+        android:layout_gravity="right"
+        android:background="@drawable/abc_ic_go"
+        android:enabled="false"
+        android:clickable="false" />
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/contactphoto"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_x="10dp"
+        android:layout_y="16dp"
+        android:src="@drawable/abc_cab_background_top_holo_light" />
+
+    <TextView
+        android:id="@+id/contactname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="88dp"
+        android:layout_y="23dp"
+        android:text="Name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:layout_x="268dp"
+        android:layout_y="57dp" />
+
+</AbsoluteLayout>

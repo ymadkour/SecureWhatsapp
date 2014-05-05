@@ -1,7 +1,6 @@
-package com.example.securewhatsapp;
+package com.example.securewhatsapp.app;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,32 +19,42 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build;
 
 
 public class MainActivity extends ActionBarActivity {
-
+	public static HttpClient httpClient ;
+	private SecureWhatsappDatabaseHelper datasource;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.registration_page);
+        datasource = new SecureWhatsappDatabaseHelper(this);
+        datasource.open();
+
+        if(!datasource.isDBEmpty()){
+            setContentView(R.layout.registration_page);
+            sendMessage();
+
+        }
+        else{
+            //Intent nextScreen = new Intent(getApplicationContext(), fragment.class);
+            //startActivity(nextScreen);
+            setContentView(R.layout.registration_page);
+            sendMessage();
+        }
 		
 		Log.d("infot1 ", "your debug text here");
-		sendMessage(); 	
+
 	
 	}
 	
@@ -62,7 +71,13 @@ public class MainActivity extends ActionBarActivity {
 			        {
 			            public void onClick(View view)
 			            {
-			            	postData(userName.getText().toString(),password.getText().toString(),country.getText().toString(),number.getText().toString() );
+			            	 Intent nextScreen = new Intent(getApplicationContext(), Contacts.class);
+				                //Sending data to another Activity
+				                startActivity(nextScreen);
+				                System.out.println("ahu ya karim,, khuuuuuuud!!!!");
+				                int  s =1 ;
+				               datasource.createSecureWhatsappUser(number.getText().toString());
+			            //	postData(userName.getText().toString(),password.getText().toString(),country.getText().toString(),number.getText().toString() );
 			              //  Log.d("EditText value=",edit_text.getText().toString() );
 			            }
 			        });
@@ -83,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
 	        	System.out.println("*****userName*******"+ userName+"*****Country*******"+ country+"*****Password*******"+ password+"*****Number*******"+ number);
 	           
 
-	            HttpClient httpClient = new DefaultHttpClient();
+	             httpClient = new DefaultHttpClient();
 
 	            // In a POST request, we don't pass the values in the URL.
 	            //Therefore we use only the web page URL as the parameter of the HttpPost argument
