@@ -4,6 +4,16 @@ import android.graphics.Bitmap;
 
 public class ContactBean {
 	private String name;
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    private String phoneNumber;
 	private boolean selected;
 	private Bitmap photoURL;
 

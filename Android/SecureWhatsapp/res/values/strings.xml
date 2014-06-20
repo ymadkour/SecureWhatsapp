@@ -10,5 +10,15 @@
     <string name="title_activity_server_side">ServerSide</string>
     <string name="title_activity_simple_client">SimpleClientActivity</string>
     <string name="title_activity_chat">Chat</string>
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="title_activity_main_activity2">MainActivity2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_activity_upload_images">UploadImages</string>
+    <string name="title_activity_friends_list">FriendsListActivity</string>
+    <string name="title_activity_group_list">GroupListActivity</string>
+    <string name="title_activity_pending_request">PendingRequest</string>
+    <string name="title_activity_pending_request_list">PendingRequestList</string>
 
 </resources>

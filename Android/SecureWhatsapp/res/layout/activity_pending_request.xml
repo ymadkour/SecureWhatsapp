@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/contactphoto"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_x="10dp"
+        android:layout_y="16dp"
+        android:src="@drawable/abc_cab_background_top_holo_light" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="99dp"
+        android:layout_y="9dp"
+        android:text="Name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="82dp"
+        android:layout_height="36dp"
+        android:text="Accept"
+        android:id="@+id/accept_button"
+        android:layout_x="94dp"
+        android:layout_y="49dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="75dp"
+        android:layout_height="34dp"
+        android:text="Reject"
+        android:id="@+id/reject_button"
+        android:layout_x="181dp"
+        android:layout_y="52dp"
+        android:singleLine="false" />
+
+</AbsoluteLayout>

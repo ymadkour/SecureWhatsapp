@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/form"
+        android:layout_alignParentTop="true" >
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/form"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:ems="10"
+            android:inputType="text"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/attach_button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/attach_button"
+            android:background="@android:drawable/ic_menu_upload"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/button_send_location" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_send_location"
+            android:layout_alignBottom="@+id/editText1"
+            android:background="@android:drawable/ic_menu_mylocation"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+        />
+    </RelativeLayout>
+
+</RelativeLayout>

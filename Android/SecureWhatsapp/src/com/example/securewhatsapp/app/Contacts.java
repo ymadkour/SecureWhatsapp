@@ -38,56 +38,16 @@ import android.widget.Toast;
 import android.os.Build;
 import android.provider.ContactsContract;
 
-public class Contacts extends ActionBarActivity {
-	public static ArrayList<String> alContacts = new ArrayList<String>();
+public class Contacts  {
+
     public static ArrayList<String> sContacts = new ArrayList<String>();
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        Contacts.sContacts.clear();
-        Contacts.alContacts.clear();
-	//	setContentView(R.layout.contact);
-		ContentResolver contResv = getContentResolver();
-		Cursor cursor = contResv.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		if(cursor.moveToFirst())
-		{
-		    
-		    do
-		    {
-		        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
 
-		        if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-		        {
-		            Cursor pCur = contResv.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-		            while (pCur.moveToNext()) 
-		            {
-		                String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-		                alContacts.add(contactNumber);
-		                break;
-		            }
-		            pCur.close();
-		        }
+	public  ArrayList<String> checkUsers( final ArrayList<String> alContacts){
 
-		    } while (cursor.moveToNext()) ;
+                sContacts.clear();
 
-            //Sending data to another Activity
-
-		     checkUsers(alContacts);
-
-		}
-		
-	}
-
-	
-	public void checkUsers( final ArrayList<String> alContacts){
-		class SendPostReqAsyncTask extends AsyncTask<String, Void, String>{
-
-	        @Override
-	        protected String doInBackground(String... params) {
-
-	        
-	            HttpPost httpPost = new HttpPost("http://192.168.1.6/whatsapp/index.php?r=user/findusers");
+	            HttpPost httpPost = new HttpPost("http://50.0.21.84/whatsapp/index.php?r=user/findusers");
 
 	            ArrayList <BasicNameValuePair> basicValuePair;
 	           
@@ -137,7 +97,7 @@ public class Contacts extends ActionBarActivity {
                         }*/
 
 
-	                    return stringBuilder.toString();
+
 
 	                } catch (ClientProtocolException cpe) {
 	                    System.out.println("First Exception caz of HttpResponese :" + cpe);
@@ -148,51 +108,11 @@ public class Contacts extends ActionBarActivity {
 	                }
 
 
-	            return null;
-	        }
-
-	        @Override
-	        protected void onPostExecute(String result) {
-	            super.onPostExecute(result);
-	            
-	            
-	               // Toast.makeText(getApplicationContext(), "User created Successfully ", Toast.LENGTH_LONG).show();
-	                Intent nextScreen = new Intent(getApplicationContext(), ContactListActivity.class);
-	                //Sending data to another Activity
-	                startActivity(nextScreen);
-	                
-	           
-	            
-	           
-	            
- 	        }           
-	    }
-
-	    SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
-	    sendPostReqAsyncTask.execute("");     
-	}
-	
-	
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.contacts, menu);
-		return true;
+        return sContacts;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	
+
 
 	/**
 	 * A placeholder fragment containing a simple view.

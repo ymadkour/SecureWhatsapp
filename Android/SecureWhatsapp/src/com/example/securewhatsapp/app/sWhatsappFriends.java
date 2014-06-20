@@ -42,7 +42,7 @@ public class sWhatsappFriends extends ActionBarActivity {
             protected String doInBackground(String... params) {
 
 
-                HttpPost httpPost = new HttpPost("http://192.168.1.6/whatsapp/index.php?r=user/loadfriends");
+                HttpPost httpPost = new HttpPost("http://50.0.21.84/whatsapp/index.php?r=user/loadfriends");
 
                 ArrayList<BasicNameValuePair> basicValuePair;
 
@@ -76,6 +76,8 @@ public class sWhatsappFriends extends ActionBarActivity {
                     }
 
                     System.out.println("Server message loadFriends "+ stringBuilder);
+                    //TODO: friends script format
+
                     return stringBuilder.toString();
 
                 } catch (ClientProtocolException cpe) {
@@ -103,7 +105,7 @@ public class sWhatsappFriends extends ActionBarActivity {
         }
 
         SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
-        sendPostReqAsyncTask.execute("");
+        new SendPostReqAsyncTask().execute("");
     }
 
     @Override
